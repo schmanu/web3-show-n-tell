@@ -4,7 +4,7 @@ theme: uncover
 class: invert
 ---
 
-
+##### Web3 Show & Tell
 ### How I built a Safe App from scratch
 #
 #
@@ -12,7 +12,7 @@ class: invert
 ##### Manuel Gellfart
 
 ![h:64](assets/github.png) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ![h:64](assets/twitter.png)
-@schmanu / @schmanu_
+@schmanu | @schmanu_
 
 
 ---
@@ -25,7 +25,8 @@ class: invert
 #
 #
 ---
-
+### Token Approval Manager
+---
 ### Idea of new Safe App
 
 ![w:300](assets/finding_problems.gif)
