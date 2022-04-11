@@ -112,20 +112,10 @@ typechain --target=ethers-v5 --out-dir src/contracts
 ---
 ### Fetching allowances (I)
 ```tsx
-export const fetchApprovalTransactions = async (
-  safeAddress: string,
-  network: string,
-  safeAppProvider: SafeAppProvider,
-) => {
-const transactionsWithDetails = 
-  await getTransactionHistory(baseApiURL, network, safeAddress)
-  .then((r) => r.results)
-  .then((r) => r.filter(approveAndMultiSendTransactions))
-  .then((r) => r.map((tx) => fetchTransactionDetails(tx)));
-
-return Promise.all(transactionsWithDetails)
-  .then((r) => response.filter(containsApproveTransaction))
-};
+await getTransactionHistory(baseApiURL, network, safeAddress)
+```
+```tsx
+await getTransactionDetails(baseApiURL, chainID, transaction.id)
 ```
 ---
 ### Fetching allowances (II)
