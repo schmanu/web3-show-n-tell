@@ -39,6 +39,19 @@ class: invert
 
 ---
 
+### Approvals in ERC20
+
+![center](assets/approvals.png)
+
+---
+
+### Unlimited Approvals
+
+- max value of `uint256`: `approve(0xffff...ffff)`
+- exist until revoked `approve(0)`
+- Convenience vs Security [[1]](https://blocksecteam.medium.com/unlimited-approval-in-erc20-convenience-or-security-1c8dce421ed7)
+---
+
 ### Tools and Libraries
 
 ![tools](assets/tools.gif)
@@ -47,7 +60,7 @@ class: invert
 ### Tools and Libraries
 
 - Interacting with Gnosis Safe
-[safe-apps-react-sdk](https://github.com/gnosis/safe-apps-sdk/tree/master/packages/safe-apps-react-sdk) & [Transaction Service API](https://safe-transaction.gnosis.io/)
+[safe-apps-react-sdk](https://github.com/gnosis/safe-apps-sdk/tree/master/packages/safe-apps-react-sdk) & [Transaction Service API](https://safe-transaction.gnosis.io/) & [safe-react-gateway-sdk](https://github.com/gnosis/safe-react-gateway-sdk)
 - User Interface
 [safe-react-components](https://github.com/gnosis/safe-react-components) & [material-ui](https://github.com/mui/material-ui) & [styled-components](https://github.com/styled-components/styled-components)
 - Interacting with smart contracts
@@ -97,6 +110,40 @@ typechain --target=ethers-v5 --out-dir src/contracts
 ```
 
 ---
+### Fetching allowances (I)
+```tsx
+export const fetchApprovalTransactions = async (
+  safeAddress: string,
+  network: string,
+  safeAppProvider: SafeAppProvider,
+) => {
+const transactionsWithDetails = 
+  await getTransactionHistory(baseApiURL, network, safeAddress)
+  .then((r) => r.results)
+  .then((r) => r.filter(approveAndMultiSendTransactions))
+  .then((r) => r.map((tx) => fetchTransactionDetails(tx)));
+
+return Promise.all(transactionsWithDetails)
+  .then((r) => response.filter(containsApproveTransaction))
+};
+```
+---
+### Fetching allowances (II)
+```tsx
+export const getAllowance = async (
+  ownerAddress: string,
+  tokenAddress: string,
+  spenderAddress: string,
+  provider: SafeAppProvider,
+): Promise<BigNumber> => {
+  const web3 = new ethers.providers.Web3Provider(provider);
+  const contract = ERC20__factory.connect(tokenAddress, web3);
+  return await contract.allowance(ownerAddress, spenderAddress);
+};
+```
+---
+#### Creating approval TXs
+
 ```tsx
 export type ApprovalEdit = {
   tokenInfo: TokenInfo;
@@ -122,20 +169,16 @@ export const createApprovals = (approvals: ApprovalEdit[]) => {
 ```tsx
 const { sdk } = useSafeAppsSDK();
 const txs = createApprovals(approvalEntries);
-const response = await sdk.txs.send({ txs }).catch(() => undefined);
+const response = await sdk.txs.send({ txs });
 if (response?.safeTxHash) {
     setSuccess(true);
 }
 ```
 ---
 
-### Token Approval Manager
+### Token Approval Manager (Demo)
 
 https://github.com/schmanu/token-approval-tracker
-
----
-
-![w:675](assets/prototype.gif)
 
 ---
 
